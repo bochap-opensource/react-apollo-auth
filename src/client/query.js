@@ -30,7 +30,9 @@ export const currentCredentialQuery = gql(
 // This query should only be ran on the in memory cache on the client.
 export const getCurrentCredential = graphql(currentCredentialQuery, {
   name: 'getCurrentCredential'
-  , fetchPolicy: 'cache-only'
+  ,  options: {
+    fetchPolicy: 'cache-only'
+  }
 });
 
 

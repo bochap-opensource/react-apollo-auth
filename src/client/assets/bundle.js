@@ -6406,7 +6406,9 @@ var currentCredentialQuery = exports.currentCredentialQuery = (0, _graphqlTag2.d
 // This query should only be ran on the in memory cache on the client.
 var getCurrentCredential = exports.getCurrentCredential = (0, _reactApollo.graphql)(currentCredentialQuery, {
   name: 'getCurrentCredential',
-  fetchPolicy: 'cache-only'
+  options: {
+    fetchPolicy: 'cache-only'
+  }
 });
 
 var loginMutation = (0, _graphqlTag2.default)('\n  mutation LoginMutation($email: String!) {\n    createCredential(credential: {\n      email: $email\n    }) {\n      email\n      name\n      token\n    }\n  }\n');
@@ -43835,11 +43837,7 @@ var Logout = function (_React$Component) {
 
                 client.writeQuery({
                   query: _query.currentCredentialQuery,
-                  data: { credential: credential },
-                  refetchQueries: [{
-                    query: _query.getCurrentCredential,
-                    fetchPolicy: 'cache-only'
-                  }]
+                  data: { credential: credential }
                 });
 
               case 6:

@@ -30,10 +30,6 @@ class Logout extends React.Component {
     client.writeQuery({
       query: currentCredentialQuery
       , data: { credential }
-      , refetchQueries: [{
-        query: getCurrentCredential
-        , fetchPolicy: 'cache-only'
-      }]
     });
   }
 
