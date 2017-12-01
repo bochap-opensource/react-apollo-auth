@@ -1,6 +1,6 @@
 # react-apollo-auth
 
-[react-apollo-auth] is a proof of concept (POC) for doing authentication for a React and GraphQL without using a 3rd party provider. It was build as part of the article in Medidum.com (https://medium.com/oredi/authentication-with-react-apollo-client-and-graphql-5edce538fb52) All content is completely free and open-source. # Replace the draft Medium Link after publishing
+[react-apollo-auth] is a proof of concept (POC) for doing authentication for a React and GraphQL without using a 3rd party provider. It was build as part of the article in Medidum.com (https://medium.com/oredi/authentication-with-react-apollo-client-and-graphql-5edce538fb52) All content is completely free and open-source.
 
 ## Contributions / Fixes
 
