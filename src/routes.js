@@ -21,7 +21,7 @@ export default () => [
       }
       , {
         path: '/login'
-        , component: withApollo(createCredential(withRouter(Login)))
+        , component: createCredential(withRouter(Login))
       }
       , {
         path: '/logout'

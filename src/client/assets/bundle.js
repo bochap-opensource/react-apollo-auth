@@ -40928,7 +40928,7 @@ exports.default = function () {
       component: (0, _query.getCurrentCredential)((0, _reactRouter.withRouter)(_home2.default))
     }, {
       path: '/login',
-      component: (0, _reactApollo.withApollo)((0, _query.createCredential)((0, _reactRouter.withRouter)(_login2.default)))
+      component: (0, _query.createCredential)((0, _reactRouter.withRouter)(_login2.default))
     }, {
       path: '/logout',
       component: (0, _reactApollo.withApollo)((0, _reactRouter.withRouter)(_logout2.default))
@@ -41167,16 +41167,32 @@ var Login = function (_React$Component) {
       writable: true,
       value: function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
-          var _this$props, createCredential, history, client, _ref2, data, credential, result;
+          var _this$props, createCredential, history, _ref2, data, result;
 
           return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _this$props = _this.props, createCredential = _this$props.createCredential, history = _this$props.history, client = _this$props.client;
+                  _this$props = _this.props, createCredential = _this$props.createCredential, history = _this$props.history;
                   _context.next = 3;
                   return createCredential({
-                    variables: { email: _this.state.email }
+                    variables: { email: _this.state.email },
+                    update: function update(proxy, _ref3) {
+                      var data = _ref3.data;
+
+                      if (data.createCredential) {
+                        // Write our data back to the cache, if there are no errors
+                        var credential = _extends({}, data.createCredential, { __typename: 'Credential'
+                        });
+
+                        // This writes to the in memory cache the credential obtained from the GraphQl server
+                        // This allows the authentication token to be found on the cache without hitting the server
+                        proxy.writeQuery({
+                          query: _query.currentCredentialQuery,
+                          data: { credential: credential }
+                        });
+                      }
+                    }
                   });
 
                 case 3:
@@ -41192,22 +41208,11 @@ var Login = function (_React$Component) {
                   return _context.abrupt('return');
 
                 case 8:
-                  credential = _extends({}, data.createCredential, { __typename: 'Credential'
-                  });
-
-                  // This writes to the in memory cache the credential obtained from the GraphQl server
-                  // This allows the authentication token to be found on the cache without hitting the server
-
-                  client.writeQuery({
-                    query: _query.currentCredentialQuery,
-                    data: { credential: credential }
-                  });
-
-                  _context.next = 12;
+                  _context.next = 10;
                   return (0, _isomorphicFetch2.default)(_constants.BASE_URI + '/credentialCookie', {
                     method: 'POST',
                     body: JSON.stringify({
-                      token: credential.token,
+                      token: data.createCredential.token,
                       expiryInDays: 1
                     }),
                     headers: {
@@ -41216,13 +41221,13 @@ var Login = function (_React$Component) {
                     credentials: 'same-origin'
                   });
 
-                case 12:
+                case 10:
                   result = _context.sent;
 
 
                   history.push('/');
 
-                case 14:
+                case 12:
                 case 'end':
                   return _context.stop();
               }
@@ -41290,9 +41295,6 @@ Login.propTypes = {
   createCredential: _propTypes2.default.func.isRequired,
   history: _propTypes2.default.shape({
     push: _propTypes2.default.func.isRequired
-  }).isRequired,
-  client: _propTypes2.default.shape({
-    writeQuery: _propTypes2.default.func.isRequired
   }).isRequired
 };
 

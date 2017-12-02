@@ -19,9 +19,25 @@ class Login extends React.Component {
   }
 
   handleSubmit = async (event) => {
-    const { createCredential, history, client } = this.props;
+    const { createCredential, history } = this.props;
     const { data } = await createCredential({
       variables: { email: this.state.email }
+      , update: (proxy, { data }) => {
+        if (data.createCredential) {
+          // Write our data back to the cache, if there are no errors
+          const credential = {
+            ...data.createCredential
+            , __typename: 'Credential'
+          };
+
+          // This writes to the in memory cache the credential obtained from the GraphQl server
+          // This allows the authentication token to be found on the cache without hitting the server
+          proxy.writeQuery({
+            query: currentCredentialQuery
+            , data: { credential }
+          });
+        }
+      }
     })
 
     if (data.errors) {
@@ -29,22 +45,10 @@ class Login extends React.Component {
       return;
     }
 
-    const credential = {
-      ...data.createCredential
-      , __typename: 'Credential'
-    };
-
-    // This writes to the in memory cache the credential obtained from the GraphQl server
-    // This allows the authentication token to be found on the cache without hitting the server
-    client.writeQuery({
-      query: currentCredentialQuery
-      , data: { credential }
-    });
-
     const result = await fetch(`${BASE_URI}/credentialCookie`, {
       method: 'POST'
       , body: JSON.stringify({
-        token: credential.token
+        token: data.createCredential.token
         , expiryInDays: 1
       })
       , headers: {
@@ -87,9 +91,6 @@ Login.propTypes = {
   createCredential: PropTypes.func.isRequired
   , history: PropTypes.shape({
     push: PropTypes.func.isRequired
-  }).isRequired
-  , client: PropTypes.shape({
-    writeQuery: PropTypes.func.isRequired
   }).isRequired
 };
 
