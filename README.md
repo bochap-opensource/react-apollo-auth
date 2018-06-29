@@ -10,7 +10,7 @@ As the whole project is open-source, you're more than welcome to file issues and
 
 You can run a local instance of the app by executing the following commands in a terminal:
 ```sh
-git clone git@github.com:oredi/react-apollo-auth.git
+git clone git@github.com:seetd-knowledge/react-apollo-auth.git
 cd react-apollo-auth
 npm install
 npm run devServer
