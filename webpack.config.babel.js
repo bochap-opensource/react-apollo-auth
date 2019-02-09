@@ -3,19 +3,19 @@ import path from 'path';
 import webpack from 'webpack';
 
 const config = {
-  devtool: 'source-map'
-  , entry: ['babel-polyfill', './src/client/index.js']
-  , output: {
-    path: path.resolve(__dirname, './src/client/assets')
-    , filename: 'bundle.js'
-    , sourceMapFilename: 'bundle.map'
-  }
-  , module: {
+  devtool: 'source-map',
+  entry: ['@babel/polyfill', './src/client/index.js'],
+  output: {
+    path: path.resolve(__dirname, './src/client/assets'),
+    filename: 'bundle.js',
+    sourceMapFilename: 'bundle.map'
+  },
+  module: {
     rules: [
       {
-        test: /\.js$/
-        , include: path.resolve(__dirname, 'src')
-        , use: ['babel-loader']
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'src'),
+        use: ['babel-loader']
       }
     ]
   }
@@ -29,10 +29,10 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true
-      , minimize: true
-      , warnings: false
-      , mangle: true
+      sourceMap: true,
+      minimize: true,
+      warnings: false,
+      mangle: true
     })
   );
 }

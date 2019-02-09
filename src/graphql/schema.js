@@ -1,10 +1,10 @@
-import { makeExecutableSchema } from 'graphql-tools';
 import jwt from 'jsonwebtoken';
+import { gql } from 'apollo-server-express';
 
 import { JWT_SECRET_KEY } from '../constants';
 
 // Type Definition
-const typeDefs = `
+const typeDefs = gql`
   type Status {
     message: String!
   }
@@ -32,11 +32,11 @@ const resolvers = {
   Query: {
     status: () => {
       return {
-        message: "Live"
+        message: 'Live'
       };
     }
-  }
-  , Mutation: {
+  },
+  Mutation: {
     createCredential: async (root, { credential }) => {
       // This is hardcoded since it is a POC and to made the example simple
       // The resolver should be by itself and there should be a store to do this authentication
@@ -45,19 +45,19 @@ const resolvers = {
       }
 
       const user = {
-        email: 'test@test.com'
-        , name: 'Test Users'
-      }
+        email: 'test@test.com',
+        name: 'Test Users'
+      };
 
       // Signing the JWT with a common secret here hardcoded in the file to keep in simple.
       const token = jwt.sign(user, JWT_SECRET_KEY);
 
       return {
-        token
-        , ...user
+        token,
+        ...user
       };
     }
   }
 };
 
-export default makeExecutableSchema({ typeDefs, resolvers });
+export { typeDefs, resolvers };

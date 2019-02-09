@@ -3,11 +3,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import Cookies from 'cookies';
 
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 
-import { COOKIE_KEY, COOKIE_SECRET_KEY, JWT_SECRET_KEY } from './constants';
+import { COOKIE_KEY, COOKIE_SECRET_KEY } from './constants';
 import renderEngine from './renderEngine';
-import schema from './graphql/schema';
+import { typeDefs, resolvers } from './graphql/schema';
 
 const PORT = 3000;
 
@@ -34,7 +34,8 @@ const start = async () => {
     let currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + req.body.expiryInDays);
     req.cookies.set(COOKIE_KEY, req.body.token, {
-      signed: true, expires: currentDate
+      signed: true,
+      expires: currentDate
     });
     res.send('OK').end();
   });
@@ -47,10 +48,8 @@ const start = async () => {
 
   // Putting the GraphQL server togather with the client to make the code simple
   // Usually implementations will look to split them up
-  app.use('/graphql', graphqlExpress({ schema }));
-  app.use('/graphiql', graphiqlExpress({
-    endpointURL: '/graphql'
-  }));
+  const server = new ApolloServer({ typeDefs, resolvers });
+  server.applyMiddleware({ app });
 
   // SSR the React client
   app.use((req, res, next) => renderEngine()(req, res, next));
